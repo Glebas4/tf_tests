@@ -1,15 +1,15 @@
 import cv2 as cv
 import numpy as np
 import rospy
-import tf2_ros
-import tf2_geometry_msgs
-from geometry_msgs.msg import PointStamped
+#import tf2_ros
+#import tf2_geometry_msgs
+#from geometry_msgs.msg import PointStamped
 from clover import srv
 from std_srvs.srv import Trigger
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import Range
-from clover import long_callback
+#from clover import long_callback
 from sensor_msgs.msg import CameraInfo
 import numpy as np
 
@@ -20,8 +20,8 @@ navigate = rospy.ServiceProxy('navigate', srv.Navigate)
 land = rospy.ServiceProxy('land', Trigger)
 
 #pub = rospy.Publisher('buildings', String, queue_size=1)
-tf_buffer = tf2_ros.Buffer()
-listener = tf2_ros.TransformListener(tf_buffer)
+#tf_buffer = tf2_ros.Buffer()
+#listener = tf2_ros.TransformListener(tf_buffer)
 bridge = CvBridge()
 K, D = None
 
@@ -71,7 +71,7 @@ def get_centers(bin_img):
         
 
 
-@long_callback
+#@long_callback
 def image_callback(data):
     img = bridge.imgmsg_to_cv2(data, 'bgr8')
     detects = scan(img)
