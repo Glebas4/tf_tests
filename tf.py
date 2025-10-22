@@ -93,10 +93,11 @@ def image_callback(data):
             x = float(cords_norm[0,0,0])
             y = float(cords_norm[0,0,1])
             r_cam = np.array([x, y, 1.0])
+            Z_cam = Z / r_cam[2]
             P_cam = r_cam * Z # Точка в координатах камеры
             final_point = geometry_msgs.msg.PointStamped()
             result = transform(final_point, P_cam)
-            print(result.point.x, result.point.y, pnt[0])
+            print(round(result.point.x, 2), round(result.point.y, 2), pnt[0])
             
 
 
