@@ -14,7 +14,6 @@ from sensor_msgs.msg import CameraInfo
 import numpy as np
 
 
-
 get_telemetry = rospy.ServiceProxy('get_telemetry', srv.GetTelemetry)
 navigate = rospy.ServiceProxy('navigate', srv.Navigate)
 land = rospy.ServiceProxy('land', Trigger)
@@ -23,7 +22,7 @@ land = rospy.ServiceProxy('land', Trigger)
 #tf_buffer = tf2_ros.Buffer()
 #listener = tf2_ros.TransformListener(tf_buffer)
 bridge = CvBridge()
-K, D = None
+K = D = Z = 0
 
 colors = {
     "red"   : ((0, 0, 220),(50, 50, 255)),
