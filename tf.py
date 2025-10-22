@@ -1,9 +1,10 @@
 import cv2 as cv
 import numpy as np
 import rospy
-#import tf2_ros
-#import tf2_geometry_msgs
-#from geometry_msgs.msg import PointStamped
+import tf2_ros
+import tf2_geometry_msgs
+import geometry_msgs.msg
+from geometry_msgs.msg import PointStamped
 from clover import srv
 from std_srvs.srv import Trigger
 from cv_bridge import CvBridge
@@ -17,20 +18,20 @@ import numpy as np
 get_telemetry = rospy.ServiceProxy('get_telemetry', srv.GetTelemetry)
 navigate = rospy.ServiceProxy('navigate', srv.Navigate)
 land = rospy.ServiceProxy('land', Trigger)
-
-#pub = rospy.Publisher('buildings', String, queue_size=1)
-#tf_buffer = tf2_ros.Buffer()
-#listener = tf2_ros.TransformListener(tf_buffer)
 bridge = CvBridge()
+#pub = rospy.Publisher('buildings', String, queue_size=1)
+tf_buffer = tf2_ros.Buffer()
+listener = tf2_ros.TransformListener(tf_buffer)
+tf_buffer.can_transform('aruco_map', 'camera_link', rospy.Time(0), rospy.Duration(5.0))
 K = D = Z = 0
-
+buildings = []
 colors = {
     "red"   : ((0, 0, 220),(50, 50, 255)),
     "green" : ((0, 220, 0),(50, 255, 50)),
     "blue"  : ((255, 0, 0),(255, 60, 60)),
     "yellow": ((0, 220, 220),(0, 255, 255)) 
 }
-buildings = []
+
 
 
 def range_callback(msg):
@@ -69,6 +70,14 @@ def get_centers(bin_img):
     return cords
         
 
+def transform(final_point, P_cam):
+    final_point.header.frame_id = 'camera_link'
+    final_point.point.x = P_cam[0]
+    final_point.point.y = P_cam[1]
+    final_point.point.z = P_cam[2]
+    final_point = tf_buffer.transform(final_point, 'aruco_map', rospy.Duration(1.0))
+    return final_point
+
 
 #@long_callback
 def image_callback(data):
@@ -82,12 +91,16 @@ def image_callback(data):
             y = float(cords_norm[0,0,1])
             r_cam = np.array([x, y, 1.0])
             P_cam = r_cam * Z # Точка в координатах камеры
-            print(pnt[0], P_cam)
+            final_point = geometry_msgs.msg.PointStamped()
+            result = transform(final_point)
+            print(result)
+            
 
 
 def main():
-    navigate(x=0, y=0, z=2.5, frame_id="body", auto_arm=True)
-    rospy.sleep(5)
+    if Z < 1:
+        navigate(x=0, y=0, z=2.5, frame_id="body", auto_arm=True)
+        rospy.sleep(5)
 
    
 if __name__ == '__main__':
