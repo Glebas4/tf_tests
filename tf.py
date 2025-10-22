@@ -96,7 +96,7 @@ def image_callback(data):
             P_cam = r_cam * Z # Точка в координатах камеры
             final_point = geometry_msgs.msg.PointStamped()
             result = transform(final_point, P_cam)
-            print(result)
+            print(result.x, result.y, pnt[0])
             
 
 
