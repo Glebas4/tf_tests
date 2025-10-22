@@ -74,7 +74,7 @@ def get_centers(bin_img):
         
 
 def transform(final_point, P_cam):
-    final_point.header.frame_id = 'camera_link'
+    final_point.header.frame_id = 'main_camera_optical'
     final_point.point.x = P_cam[0]
     final_point.point.y = P_cam[1]
     final_point.point.z = P_cam[2]
