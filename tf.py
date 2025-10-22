@@ -15,6 +15,9 @@ from sensor_msgs.msg import CameraInfo
 import numpy as np
 
 
+
+rospy.init_node('flight')
+
 get_telemetry = rospy.ServiceProxy('get_telemetry', srv.GetTelemetry)
 navigate = rospy.ServiceProxy('navigate', srv.Navigate)
 land = rospy.ServiceProxy('land', Trigger)
@@ -104,7 +107,6 @@ def main():
 
    
 if __name__ == '__main__':
-    rospy.init_node('flight')
     rospy.Subscriber('rangefinder/range', Range, range_callback)
     image_sub = rospy.Subscriber('main_camera/image_raw', Image, image_callback)
     K, D = cam_info()
