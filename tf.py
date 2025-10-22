@@ -16,6 +16,8 @@ import numpy as np
 
 
 
+rospy.init_node('flight')
+
 get_telemetry = rospy.ServiceProxy('get_telemetry', srv.GetTelemetry)
 navigate = rospy.ServiceProxy('navigate', srv.Navigate)
 land = rospy.ServiceProxy('land', Trigger)
@@ -42,7 +44,7 @@ def range_callback(msg):
 
 def cam_info():
     global K, D
-    msg = rospy.wait_for_message('/main_camera/camera_info', CameraInfo, timeout=1) # Информация о камере
+    msg = rospy.wait_for_message('main_camera/camera_info', CameraInfo, timeout=1) # Информация о камере
     K = np.array(msg.K).reshape(3, 3) #Создание матрицы 3x3
     D = np.array(msg.D) #Коэффициенты дисторсии
     return K, D
@@ -105,7 +107,6 @@ def main():
 
    
 if __name__ == '__main__':
-    rospy.init_node('flight')
     rospy.Subscriber('rangefinder/range', Range, range_callback)
     image_sub = rospy.Subscriber('main_camera/image_raw', Image, image_callback)
     K, D = cam_info()
